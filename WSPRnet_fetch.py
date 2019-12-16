@@ -4,30 +4,22 @@ import json
 import unicodedata
 from bs4 import BeautifulSoup
 
-class WSPR_datapoint(object):
-
-    def __init__(self, l):
-        assert len(l) == 11
-
-        self.datetime  = l[0]
-        self.callsign  = l[1]
-        self.frequency = l[2]
-        self.snr       = l[3]
-        self.drift     = l[4]
-        self.grid      = l[5]
-        self.pwr       = l[6]
-        self.reporter  = l[7]
-        self.rgrid     = l[8]
-        self.km        = l[9]
-        self.az        = l[10]
-    
-    def __repr__(self):
-        
-        return '{}'.format(self.callsign)
-
-
 def get_wspr_data(callsign, timelimit = 3600, band = 14, count = 50):
     ''' Returns a list of lists with WSPR entries for the provided callsign in the provided timeframe '''
+
+    WSPR_datapoint = [
+        'datetime',
+        'callsign',
+        'frequency',
+        'snr',
+        'drift',
+        'grid',
+        'pwr',
+        'reporter',
+        'rgrid',
+        'km',
+        'az'
+    ]
 
     url = 'http://wsprnet.org/drupal/wsprnet/spotquery'
 
@@ -77,7 +69,7 @@ def get_wspr_data(callsign, timelimit = 3600, band = 14, count = 50):
             rows.append(row)
     
     for row in rows:
-        res.append(WSPR_datapoint([ x for x in map(str.strip, row)]))
+        res.append( dict( zip(WSPR_datapoint, [ x for x in map(str.strip, row)]) ) )
     
     return res
 
@@ -110,7 +102,7 @@ def get_telemetry(callsign, letter, number):
 
     for d in wspr_extended:
         if d.grid != wspr_regular.grid:
-            wspr_extended.del(d)
+            wspr_extended.delete(d)
 
     # TODO: get real data
     dbm_callsign = '23'
@@ -178,5 +170,6 @@ def parse_wspr_telemetry(callsign, letter, number):
     return locator, altitude, 0, temperature, voltage
 
 
-#res = get_wspr_data('CALL', timelimit=3600, band=14, count=1)[0]
-#print(res)
+res = get_wspr_data('AA6FT', timelimit=3600, band=14, count=1)
+if res:
+    print(res[0])
