@@ -2,6 +2,7 @@ import requests
 import logging
 import json
 import unicodedata
+import gridsquare_functions
 from bs4 import BeautifulSoup
 
 def get_wspr_data(callsign, timelimit = 3600, band = 14, count = 50):
@@ -168,8 +169,3 @@ def parse_wspr_telemetry(callsign, letter, number):
     temperature = temperature[telemetry[5]]
     
     return locator, altitude, 0, temperature, voltage
-
-
-res = get_wspr_data('AA6FT', timelimit=3600, band=14, count=1)
-if res:
-    print(res[0])
