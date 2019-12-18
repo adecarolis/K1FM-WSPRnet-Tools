@@ -3,9 +3,10 @@ import logging
 import json
 import unicodedata
 import gridsquare_functions
+from datetime import datetime
 from bs4 import BeautifulSoup
 
-def get_wspr_data(callsign, timelimit = 3600, band = 14, count = 50):
+def get_wspr_data(callsign, timelimit = 3600 * 24, band = 14, count = 50):
     ''' Returns a list of lists with WSPR entries for the provided callsign in the provided timeframe '''
 
     WSPR_datapoint = [
@@ -76,13 +77,18 @@ def get_wspr_data(callsign, timelimit = 3600, band = 14, count = 50):
 
 def get_telemetry(callsign, letter, number):
     ''' Returns latest telemetry for given callsign provided
-        an ID letter (Q or 0) and number (0 to 9) are provided
-    
-        switch (msg_type) {
+        an ID letter (Q or 0) and number (0 to 9) are provided.
+        
+        - Altitude
+        - 6 Chars Gridsquare
+        - Voltage
+        - Temperature
+        - Sats
+
         case 0 :
         for (i = 0; i < 5; i++ ) {
-        g_beacon_callsign[i] = BEACON_CALLSIGN_6CHAR[i];
-        if (BEACON_CALLSIGN_6CHAR[i] == '\0') break;
+            g_beacon_callsign[i] = BEACON_CALLSIGN_6CHAR[i];
+            if (BEACON_CALLSIGN_6CHAR[i] == '\0') break;
         }
         g_tx_pwr_dbm = encode_altitude(g_tx_data.altitude_m);
         break;
@@ -96,76 +102,78 @@ def get_telemetry(callsign, letter, number):
         g_beacon_callsign[5] = encode_temperature(g_tx_data.temperature_c);
 
         g_tx_pwr_dbm = encode_solar_voltage_sats(0, g_tx_data.number_of_sats); // TDB: This can be utilized better
-        break; '''
-    
-    wspr_regular  = get_wspr_data(callsign=callsign, count = 1)[0]
-    wspr_extended = get_wspr_data(callsign='{}%{}*'.format(letter, number), count = 1)[0]
-
-    for d in wspr_extended:
-        if d.grid != wspr_regular.grid:
-            wspr_extended.delete(d)
-
-    # TODO: get real data
-    dbm_callsign = '23'
-    dbm_telemetry = '17'
-    telemetry = 'QB8BII'
-    locator_4 = 'EK67'
-    
-    return dbm_callsign, dbm_telemetry, telemetry, locator_4
-
-
-def parse_wspr_telemetry(callsign, letter, number):
-    ''' Parses an extended telemetry WSPR frame and returns
-        locator, altitude, temperature, voltage '''
-
-    temperature = {
-        0: 35,
-        3: 32,
-        7: 27,
-        10: 22,
-        13: 17,
-        17: 12,
-        20: 7,
-        23: 2,
-        27: -3,
-        30: -8,
-        33: -13,
-        37: -18,
-        40: -23,
-        43: -28,
-        47: -33,
-        50: -38,
-        53: -43,
-        57: -48,
-        60: -50
-    }
+        '''
 
     altitude = {
-        0: 500,
-        3: 1500,
-        7: 2500,
-        10: 3500,
-        13: 4500,
-        17: 5500,
-        20: 6500,
-        23: 7500,
-        27: 8500,
-        30: 9500,
-        33: 10500,
-        37: 11500,
-        40: 12500,
-        43: 13500,
-        47: 14500,
-        50: 15500,
-        53: 16500,
-        57: 17500,
-        60: 18000
+        0.001: 500,  # 0dBm
+        0.002: 1500, # 3dBm
+        0.005: 2500, # 7dBm
+        0.01: 3500,  # 10dBm
+        0.02: 4500,  # 13dBm
+        0.05: 5500,  # 17dBm
+        0.1: 6500,   # 20dBm
+        0.2: 7500,   # 23dBm
+        0.5: 8500,   # 27dBm
+        1: 9500,     # 30dBm
+        2: 10500,    # 33dBm
+        5: 11500,    # 37dBm
+        10: 12500,   # 40dBm
+        20: 13500,   # 43dBm
+        50: 14500,   # 47dBm
+        100: 15500,  # 50dBm
+        200: 16500,  # 53dBm
+        500: 17500,  # 57dBm
+        1000: 18000  # 60dBm
     }
 
-    dbm_callsign, dbm_telemetry, telemetry, locator_4 = latest_wspr_entry(callsign, letter, number)
-    locator = locator_4 + telemetry[3:5].lower()
-    altitude = altitude[dbm_callsign]
-    #speed = get_speed(dbm_telemetry)
-    temperature = temperature[telemetry[5]]
+    temperature = {
+        'A': -35,
+        'B': -32,
+        'C': -27,
+        'D': -22,
+        'E': -17,
+        'F': -12,
+        'G': -7,
+        'H': -2,
+        'I': 3,
+        'J': 5
+    }
+
+    voltage = {
+        'A': 3.0,
+        'B': 3.1,
+        'C': 3.3,
+        'D': 3.5,
+        'E': 3.7,
+        'F': 3.9,
+        'G': 4.1,
+        'H': 4.3,
+        'I': 4.5,
+        'J': 4.7,
+        'K': 4.9,
+        'L': 5.1
+    }
+
+    satellites = {
+        0.001: 2,   # 0dBm
+        0.002: 5,   # 3dBm
+        0.005: 2500 # 7dBm
+    }
     
-    return locator, altitude, 0, temperature, voltage
+    try:
+        wspr_regular = get_wspr_data(callsign = callsign, count = 1)[0]
+        wspr_extended = get_wspr_data(callsign='{}%{}*'.format(letter, number), count = 1)[0]
+    except IndexError:
+        return {}
+
+    print(wspr_extended)
+
+    res = {}
+    res['callsign']    = callsign
+    res['datetime']    = wspr_extended['datetime']
+    res['altitude']    = altitude[float(wspr_regular['pwr'])]
+    res['grid']        = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
+    res['voltage']     = voltage[wspr_extended['callsign'][1]]
+    res['temperature'] = temperature[wspr_extended['callsign'][5]]
+
+    return res

@@ -3,6 +3,7 @@ import aprslib
 import WSPRnet_fetch
 import gridsquare_functions
 import pprint
+from datetime import datetime
 
 def aprs_password(callsign):
     callsign = callsign.upper()
@@ -34,28 +35,63 @@ def decimal_to_aprs(deg, latlng):
 
 if __name__ == '__main__':
 
-    # res = WSPRnet_fetch.get_wspr_data('AA6FT', timelimit=3600, band=14, count=1)
-    # if res:
-    #     print(res[0])
-    callsign = 'N0CALL'
+    callsign = 'K1FM'
+
+    pp = pprint.PrettyPrinter(indent=4)
+    res = WSPRnet_fetch.get_telemetry(callsign,'Q',9)
+    pp.pprint(res)
+
+    res_datetime = datetime.strptime(res['datetime'], '%Y-%m-%d %H:%M')
+    res_age = datetime.utcnow() - res_datetime
+
+    # res = {}
+
+    # res['callsign'] = 'K1FM'
+    # res['grid'] = 'FN30AS'
+    # res['altitude'] = '10'
+    # res['temperature'] = '5'
+    # res['voltage'] = '3.1'
+    # res_age = 40
+
+    if res == {}:
+        exit(1)
+
+    res_datetime = datetime.strptime('2019-12-18 03:18', '%Y-%m-%d %H:%M')
+
+    # if res_age.second > 180:
+    #     exit(2)
+
     path = 'WSPR,TCPIP'
-    time = '171310z'
-    lat, lng = gridsquare_functions.to_latlng('FN30AS')
+    time = '{:0>2s}{:0>2s}{:0>2s}'.format(
+                            str(res_datetime.day),
+                            str(res_datetime.hour),
+                            str(res_datetime.minute)
+                        )
+    alt = int(int(res['altitude']) * 3.2808)
+    temperature = res['temperature']
+    voltage = res['voltage']
+    print(time)
+
+    lat, lng = gridsquare_functions.to_latlng(res['grid'])
     lat = decimal_to_aprs(lat, 'lat')
     lng = decimal_to_aprs(lng, 'lng')
 
     AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
     AIS.connect()
 
-    pp = pprint.PrettyPrinter(indent=4)
-    aprs_string = "{}>{}:/{}{}/{:0>9s}>Testing".format(
+    aprs_string = "{}>{}:/{}z{}/{:0>9s}O{}V {}C /A={:0>6d}".format(
                                                     callsign,
                                                     path,
                                                     time,
                                                     lat,
-                                                    lng
+                                                    lng,
+                                                    voltage,
+                                                    temperature,
+                                                    alt
                                                 )
     pp.pprint(aprslib.parse(aprs_string))
+
+
     AIS.sendall(aprs_string)
 
     # callsign = 'K1FM'
@@ -69,3 +105,5 @@ if __name__ == '__main__':
     #                                             time,
     #                                             gridsquare
     #                                           )))
+
+    exit(0)
