@@ -78,12 +78,17 @@ def get_wspr_data(callsign, timelimit = 3600 * 24, band = 14, count = 50):
 def get_telemetry(callsign, letter, number):
     ''' Returns latest telemetry for given callsign provided
         an ID letter (Q or 0) and number (0 to 9) are provided.
-        
+
+        Currently available:
+
         - Altitude
         - 6 Chars Gridsquare
         - Voltage
         - Temperature
         - Sats
+
+
+        Encoding:
 
         case 0 :
         for (i = 0; i < 5; i++ ) {
@@ -100,7 +105,6 @@ def get_telemetry(callsign, letter, number):
         g_beacon_callsign[3] = g_tx_data.grid_sq_6char[4];
         g_beacon_callsign[4] = g_tx_data.grid_sq_6char[5];
         g_beacon_callsign[5] = encode_temperature(g_tx_data.temperature_c);
-
         g_tx_pwr_dbm = encode_solar_voltage_sats(0, g_tx_data.number_of_sats); // TDB: This can be utilized better
         '''
 
@@ -157,14 +161,14 @@ def get_telemetry(callsign, letter, number):
     satellites = {
         0.001: 2,   # 0dBm
         0.002: 5,   # 3dBm
-        0.005: 2500 # 7dBm
+        0.005: 7    # 7dBm
     }
     
     try:
         wspr_regular = get_wspr_data(callsign = callsign, count = 1)[0]
         wspr_extended = get_wspr_data(callsign='{}%{}*'.format(letter, number), count = 1)[0]
     except IndexError:
-        return {}
+        return None
 
     print(wspr_extended)
 
@@ -175,5 +179,6 @@ def get_telemetry(callsign, letter, number):
     res['grid']        = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
     res['voltage']     = voltage[wspr_extended['callsign'][1]]
     res['temperature'] = temperature[wspr_extended['callsign'][5]]
+    res['satellites']  = satellites[wspr_extended['pwr']]
 
     return res

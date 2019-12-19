@@ -39,27 +39,29 @@ if __name__ == '__main__':
 
     pp = pprint.PrettyPrinter(indent=4)
     res = WSPRnet_fetch.get_telemetry(callsign,'Q',9)
+
+    if res is None:
+        print('No WSPR data found')
+        exit(1)
+
     pp.pprint(res)
 
     res_datetime = datetime.strptime(res['datetime'], '%Y-%m-%d %H:%M')
+    #res_datetime = datetime.strptime('2019-12-19 10:22', '%Y-%m-%d %H:%M')
     res_age = datetime.utcnow() - res_datetime
 
     # res = {}
-
     # res['callsign'] = 'K1FM'
     # res['grid'] = 'FN30AS'
     # res['altitude'] = '10'
     # res['temperature'] = '5'
     # res['voltage'] = '3.1'
-    # res_age = 40
+    # res['satellites'] = 7
 
-    if res == {}:
+    if res_age.seconds > 180:
+        print('No new WSPR data found')
+        print('Latest WSPR entry: ', res['datetime'])
         exit(1)
-
-    res_datetime = datetime.strptime('2019-12-18 03:18', '%Y-%m-%d %H:%M')
-
-    # if res_age.second > 180:
-    #     exit(2)
 
     path = 'WSPR,TCPIP'
     time = '{:0>2s}{:0>2s}{:0>2s}'.format(
@@ -68,9 +70,6 @@ if __name__ == '__main__':
                             str(res_datetime.minute)
                         )
     alt = int(int(res['altitude']) * 3.2808)
-    temperature = res['temperature']
-    voltage = res['voltage']
-    print(time)
 
     lat, lng = gridsquare_functions.to_latlng(res['grid'])
     lat = decimal_to_aprs(lat, 'lat')
@@ -79,31 +78,19 @@ if __name__ == '__main__':
     AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
     AIS.connect()
 
-    aprs_string = "{}>{}:/{}z{}/{:0>9s}O{}V {}C /A={:0>6d}".format(
+    aprs_string = "{}>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
                                                     callsign,
                                                     path,
                                                     time,
                                                     lat,
                                                     lng,
-                                                    voltage,
-                                                    temperature,
+                                                    res['voltage'],
+                                                    res['temperature'],
+                                                    res['satellites'],
                                                     alt
                                                 )
     pp.pprint(aprslib.parse(aprs_string))
 
-
     AIS.sendall(aprs_string)
-
-    # callsign = 'K1FM'
-    # path = 'APRS64'
-    # time = '092345z'
-    # gridsquare = '4903.50N/07201.75W'
-    # aprs_string = "WC3R>APWW10,TCPIP*,qAC,T2UKRAINE:>FN10jk/- APRSISCE/32"
-    # pp.pprint(aprslib.parse(aprs_string.format(
-    #                                             callsign,
-    #                                             path,
-    #                                             time,
-    #                                             gridsquare
-    #                                           )))
 
     exit(0)
