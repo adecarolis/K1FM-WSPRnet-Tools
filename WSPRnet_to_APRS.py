@@ -46,18 +46,27 @@ if __name__ == '__main__':
     parser.add_argument('--ssid', dest='ssid', type=int, default=None)
     
     args = parser.parse_args()
-    print(args)
+    debug = args.debug
+
+    if debug:
+        print('Command line arguments:')
+        print(args)
 
     callsign = args.callsign
 
     pp = pprint.PrettyPrinter(indent=4)
-    res = WSPRnet_fetch.get_telemetry(callsign,'Q',9)
+    res = WSPRnet_fetch.get_telemetry(callsign,
+                                      args.first_identifier,
+                                      args.second_identifier)
 
     if res is None:
-        print('No WSPR data found')
+        if debug:
+            print('No WSPR data found')
         exit(1)
 
-    pp.pprint(res)
+    if debug:
+        print('WSPR Data:')
+        pp.pprint(res)
 
     res_datetime = datetime.strptime(res['datetime'], '%Y-%m-%d %H:%M')
     #res_datetime = datetime.strptime('2019-12-19 10:22', '%Y-%m-%d %H:%M')
@@ -72,8 +81,9 @@ if __name__ == '__main__':
     # res['satellites'] = 7
 
     if res_age.seconds > 180:
-        print('No new WSPR data found')
-        print('Latest WSPR entry: ', res['datetime'])
+        if debug:
+            print('No new WSPR data found')
+            print('Latest WSPR entry: ', res['datetime'])
         exit(1)
 
     path = 'WSPR,TCPIP'
@@ -88,11 +98,16 @@ if __name__ == '__main__':
     lat = decimal_to_aprs(lat, 'lat')
     lng = decimal_to_aprs(lng, 'lng')
 
+    if ssid:
+        suffix = '-{}'.format(ssid)
+    else: suffix = ''
+
     AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
     AIS.connect()
 
-    aprs_string = "{}>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
+    aprs_string = "{}{}>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
                                                     callsign,
+                                                    suffix,
                                                     path,
                                                     time,
                                                     lat,
@@ -102,7 +117,11 @@ if __name__ == '__main__':
                                                     res['satellites'],
                                                     alt
                                                 )
-    pp.pprint(aprslib.parse(aprs_string))
+    
+    if debug:
+        print('Raw APRS string being sent: ', aprs_string)
+        print('Parsed APRS data being sent:')
+        pp.pprint(aprslib.parse(aprs_string))
 
     AIS.sendall(aprs_string)
 
