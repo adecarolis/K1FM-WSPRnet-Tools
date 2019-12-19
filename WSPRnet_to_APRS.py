@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import argparse
 import aprslib
 import WSPRnet_fetch
 import gridsquare_functions
@@ -35,7 +36,19 @@ def decimal_to_aprs(deg, latlng):
 
 if __name__ == '__main__':
 
-    callsign = 'K1FM'
+    parser = argparse.ArgumentParser(description='WSPR to APRS gateway bridge for K1FM Picoballoon boards.')
+    parser.add_argument('callsign', metavar='C', type=str, nargs='+',
+                    help='station callsign')
+    parser.add_argument('first_identifier', metavar='F', type=str, choices=['Q', '0'], help='first identifier (Q or 0)')
+    parser.add_argument('second_identifier', metavar='S', type=int, choices=range(0, 10), help='second identifier (0 to 9)')
+    parser.add_argument('--dry-run', dest='dry_run', action='store_true')
+    parser.add_argument('--debug', dest='debug', action='store_true')
+    parser.add_argument('--ssid', dest='ssid', type=int, default=None)
+    
+    args = parser.parse_args()
+    print(args)
+
+    callsign = args.callsign
 
     pp = pprint.PrettyPrinter(indent=4)
     res = WSPRnet_fetch.get_telemetry(callsign,'Q',9)
