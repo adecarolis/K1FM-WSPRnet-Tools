@@ -37,8 +37,7 @@ def decimal_to_aprs(deg, latlng):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='WSPR to APRS gateway bridge for K1FM Picoballoon boards.')
-    parser.add_argument('callsign', metavar='callsign', type=str, nargs='+',
-                    help='station callsign')
+    parser.add_argument('callsign', metavar='callsign', type=str, help='station callsign')
     parser.add_argument('first_identifier', metavar='first_identifier', type=str, choices=['Q', '0'], help='first identifier (Q or 0)')
     parser.add_argument('second_identifier', metavar='second_identifier', type=int, choices=range(0, 10), help='second identifier (0 to 9)')
     parser.add_argument('--dry-run', dest='dry_run', action='store_true')
@@ -80,9 +79,13 @@ if __name__ == '__main__':
     # res['voltage'] = '3.1'
     # res['satellites'] = 7
 
-    if res_age.seconds > 180:
+    # At arrival, WSPR data is at least 112 seconds 'old'
+    # We have 45 seconds to capture it, otherwise it will be considered
+    # expired
+    packet_age = res_age.seconds - 112
+    if (packet_age) > 45:
         if debug:
-            print('No new WSPR data found')
+            print('No new WSPR data found (age:)', packet_age)
             print('Latest WSPR entry: ', res['datetime'])
         exit(0)
 
@@ -98,8 +101,8 @@ if __name__ == '__main__':
     lat = decimal_to_aprs(lat, 'lat')
     lng = decimal_to_aprs(lng, 'lng')
 
-    if ssid:
-        suffix = '-{}'.format(ssid)
+    if args.callsign:
+        suffix = '-{}'.format(args.ssid)
     else: suffix = ''
 
     AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
@@ -124,6 +127,11 @@ if __name__ == '__main__':
         pp.pprint(aprslib.parse(aprs_string))
 
     if not args.dry_run:
+        if debug:
+            print('Packet sent to APRS-IS')
         AIS.sendall(aprs_string)
+    else:
+        if debug:
+            print('Dry run! Not sending anything to APRS-IS')
 
     exit(0)

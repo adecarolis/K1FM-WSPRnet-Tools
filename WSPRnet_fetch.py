@@ -179,6 +179,6 @@ def get_telemetry(callsign, letter, number):
     res['grid']        = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
     res['voltage']     = voltage[wspr_extended['callsign'][1]]
     res['temperature'] = temperature[wspr_extended['callsign'][5]]
-    res['satellites']  = satellites[wspr_extended['pwr']]
+    res['satellites']  = satellites[float(wspr_extended['pwr'])]
 
     return res
