@@ -37,10 +37,10 @@ def decimal_to_aprs(deg, latlng):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='WSPR to APRS gateway bridge for K1FM Picoballoon boards.')
-    parser.add_argument('callsign', metavar='C', type=str, nargs='+',
+    parser.add_argument('callsign', metavar='callsign', type=str, nargs='+',
                     help='station callsign')
-    parser.add_argument('first_identifier', metavar='F', type=str, choices=['Q', '0'], help='first identifier (Q or 0)')
-    parser.add_argument('second_identifier', metavar='S', type=int, choices=range(0, 10), help='second identifier (0 to 9)')
+    parser.add_argument('first_identifier', metavar='first_identifier', type=str, choices=['Q', '0'], help='first identifier (Q or 0)')
+    parser.add_argument('second_identifier', metavar='second_identifier', type=int, choices=range(0, 10), help='second identifier (0 to 9)')
     parser.add_argument('--dry-run', dest='dry_run', action='store_true')
     parser.add_argument('--debug', dest='debug', action='store_true')
     parser.add_argument('--ssid', dest='ssid', type=int, default=None)
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     if res is None:
         if debug:
             print('No WSPR data found')
-        exit(1)
+        exit(0)
 
     if debug:
         print('WSPR Data:')
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         if debug:
             print('No new WSPR data found')
             print('Latest WSPR entry: ', res['datetime'])
-        exit(1)
+        exit(0)
 
     path = 'WSPR,TCPIP'
     time = '{:0>2s}{:0>2s}{:0>2s}'.format(
@@ -123,6 +123,7 @@ if __name__ == '__main__':
         print('Parsed APRS data being sent:')
         pp.pprint(aprslib.parse(aprs_string))
 
-    AIS.sendall(aprs_string)
+    if not args.dry_run:
+        AIS.sendall(aprs_string)
 
     exit(0)
