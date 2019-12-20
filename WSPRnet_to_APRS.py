@@ -42,7 +42,6 @@ if __name__ == '__main__':
     parser.add_argument('second_identifier', metavar='second_identifier', type=int, choices=range(0, 10), help='second identifier (0 to 9)')
     parser.add_argument('--dry-run', dest='dry_run', action='store_true')
     parser.add_argument('--debug', dest='debug', action='store_true')
-    parser.add_argument('--ssid', dest='ssid', type=int, default=None)
     
     args = parser.parse_args()
     debug = args.debug
@@ -101,16 +100,11 @@ if __name__ == '__main__':
     lat = decimal_to_aprs(lat, 'lat')
     lng = decimal_to_aprs(lng, 'lng')
 
-    if args.callsign:
-        suffix = '-{}'.format(args.ssid)
-    else: suffix = ''
-
     AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
     AIS.connect()
 
-    aprs_string = "{}{}>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
+    aprs_string = "{}>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
                                                     callsign,
-                                                    suffix,
                                                     path,
                                                     time,
                                                     lat,
