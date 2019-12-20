@@ -172,9 +172,13 @@ def get_telemetry(callsign, letter, number):
 
     print(wspr_extended)
 
+    datetime = wspr_extended['datetime']
+    if wspr_extended['datetime'] < wspr_regular['datetime']:
+        datetime = wspr_regular['datetime']
+
     res = {}
     res['callsign']    = callsign
-    res['datetime']    = wspr_extended['datetime']
+    res['datetime']    = datetime
     res['altitude']    = altitude[float(wspr_regular['pwr'])]
     res['grid']        = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
     res['voltage']     = voltage[wspr_extended['callsign'][1]]
