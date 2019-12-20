@@ -82,7 +82,7 @@ if __name__ == '__main__':
     # We have 45 seconds to capture it, otherwise it will be considered
     # expired
     packet_age = res_age.seconds - 112
-    if (packet_age) > 45:
+    if (packet_age) > 90:
         if debug:
             print('No new WSPR data found (age:)', packet_age)
             print('Latest WSPR entry: ', res['datetime'])
