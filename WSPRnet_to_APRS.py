@@ -103,7 +103,7 @@ if __name__ == '__main__':
     AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
     AIS.connect()
 
-    aprs_string = "{}>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
+    aprs_string = "{}-11>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
                                                     callsign,
                                                     path,
                                                     time,
