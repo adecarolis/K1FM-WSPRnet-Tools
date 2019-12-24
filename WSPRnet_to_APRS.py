@@ -7,6 +7,8 @@ import pprint
 from datetime import datetime
 
 def aprs_password(callsign):
+    ''' Takes a callsign and returns its APRS-IS password '''
+
     callsign = callsign.upper()
     hash = 0x73e2
     i = 0
@@ -18,6 +20,8 @@ def aprs_password(callsign):
 
 
 def decimal_to_aprs(deg, latlng):
+    ''' Converts deciaml lat / lng values to the APRS compatible format '''
+
     assert latlng == 'lat' or latlng == 'lng'
 
     d = int(deg)
@@ -31,8 +35,56 @@ def decimal_to_aprs(deg, latlng):
     if latlng == 'lng' and d >= 0: suffix = 'E'
     elif latlng == 'lng' and d < 0: suffix = 'W'
 
-    return '{}{}.{}{}'.format(abs(d), m, int(sd/60*100), suffix)
+    return '{}{:0<2d}.{}{}'.format(abs(d), m, int(sd/60*100), suffix)
 
+
+def AIS_send(aprs_string, callsign):
+    ''' Send a properly formatted APRS packet to the APRS-IS network '''
+
+    AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
+    AIS.connect()
+    AIS.sendall(aprs_string)
+
+
+def check_data_age(wspr_data):
+    ''' Returns the age of a wspr packet '''
+
+    res_datetime = datetime.strptime(wspr_data['datetime'], '%Y-%m-%d %H:%M')
+    res_age = datetime.utcnow() - res_datetime
+
+    # At arrival, WSPR data is at least 112 seconds 'old'
+    return res_age.seconds - 112
+
+
+
+def generate_aprs_string(wspr_data):
+    ''' Takes WSPR data and generates a corresponding APRS string '''
+
+    print(wspr_data)
+    res_datetime = datetime.strptime(wspr_data['datetime'], '%Y-%m-%d %H:%M')
+    path = 'WSPR,TCPIP'
+    time = '{:0>2s}{:0>2s}{:0>2s}'.format(
+                            str(res_datetime.day),
+                            str(res_datetime.hour),
+                            str(res_datetime.minute)
+                        )
+    alt = int(int(res['altitude']) * 3.2808)
+
+    lat, lng = gridsquare_functions.to_latlng(wspr_data['grid'])
+    lat = decimal_to_aprs(lat, 'lat')
+    lng = decimal_to_aprs(lng, 'lng')
+
+    return "{}-11>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
+                                                    callsign,
+                                                    path,
+                                                    time,
+                                                    lat,
+                                                    lng,
+                                                    wspr_data['voltage'],
+                                                    wspr_data['temperature'],
+                                                    wspr_data['satellites'],
+                                                    alt
+                                                )
 
 if __name__ == '__main__':
 
@@ -56,64 +108,24 @@ if __name__ == '__main__':
     res = WSPRnet_fetch.get_telemetry(callsign,
                                       args.first_identifier,
                                       args.second_identifier)
-
+    
     if res is None:
         if debug:
             print('No WSPR data found')
         exit(0)
-
+    
     if debug:
         print('WSPR Data:')
         pp.pprint(res)
-
-    res_datetime = datetime.strptime(res['datetime'], '%Y-%m-%d %H:%M')
-    #res_datetime = datetime.strptime('2019-12-19 10:22', '%Y-%m-%d %H:%M')
-    res_age = datetime.utcnow() - res_datetime
-
-    # res = {}
-    # res['callsign'] = 'K1FM'
-    # res['grid'] = 'FN30AS'
-    # res['altitude'] = '10'
-    # res['temperature'] = '5'
-    # res['voltage'] = '3.1'
-    # res['satellites'] = 7
-
-    # At arrival, WSPR data is at least 112 seconds 'old'
-    # We have 45 seconds to capture it, otherwise it will be considered
-    # expired
-    packet_age = res_age.seconds - 112
-    if (packet_age) > 90:
+    
+    age = check_data_age(res)
+    if (age < 45):
+        aprs_string = generate_aprs_string(res)
+    else:
         if debug:
-            print('No new WSPR data found (age:)', packet_age)
+            print('No new WSPR data found (last packet age: {}s)'.format(age))
             print('Latest WSPR entry: ', res['datetime'])
         exit(0)
-
-    path = 'WSPR,TCPIP'
-    time = '{:0>2s}{:0>2s}{:0>2s}'.format(
-                            str(res_datetime.day),
-                            str(res_datetime.hour),
-                            str(res_datetime.minute)
-                        )
-    alt = int(int(res['altitude']) * 3.2808)
-
-    lat, lng = gridsquare_functions.to_latlng(res['grid'])
-    lat = decimal_to_aprs(lat, 'lat')
-    lng = decimal_to_aprs(lng, 'lng')
-
-    AIS = aprslib.IS(callsign, passwd=aprs_password(callsign), port=14580)
-    AIS.connect()
-
-    aprs_string = "{}-11>{}:/{}z{}/{:0>9s}OSolar:{}V Temperature:{}C Satellites:{} /A={:0>6d}".format(
-                                                    callsign,
-                                                    path,
-                                                    time,
-                                                    lat,
-                                                    lng,
-                                                    res['voltage'],
-                                                    res['temperature'],
-                                                    res['satellites'],
-                                                    alt
-                                                )
     
     if debug:
         print('Raw APRS string being sent: ', aprs_string)
@@ -123,7 +135,7 @@ if __name__ == '__main__':
     if not args.dry_run:
         if debug:
             print('Packet sent to APRS-IS')
-        AIS.sendall(aprs_string)
+        AIS_send(aprs_string, callsign)
     else:
         if debug:
             print('Dry run! Not sending anything to APRS-IS')

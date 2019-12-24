@@ -166,18 +166,21 @@ def get_telemetry(callsign, letter, number):
     
     try:
         wspr_regular = get_wspr_data(callsign = callsign, count = 1)[0]
-        wspr_extended = get_wspr_data(callsign='{}%{}*'.format(letter, number), count = 1)[0]
+        search_callsign = '{}%{}*'.format(letter, number)
+        wspr_extended = get_wspr_data(callsign = search_callsign, count = 1)[0]
     except IndexError:
         return None
 
-    print(wspr_extended)
-
-    datetime = wspr_extended['datetime']
-    if wspr_extended['datetime'] < wspr_regular['datetime']:
-        datetime = wspr_regular['datetime']
+    
 
     res = {}
-    res['callsign']    = callsign
+
+    if wspr_extended['datetime'] < wspr_regular['datetime']:
+        datetime = wspr_regular['datetime']
+    else:
+        datetime = wspr_extended['datetime']        
+
+    res['callsign']    = wspr_extended['callsign']
     res['datetime']    = datetime
     res['altitude']    = altitude[float(wspr_regular['pwr'])]
     res['grid']        = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
