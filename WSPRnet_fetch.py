@@ -180,12 +180,13 @@ def get_telemetry(callsign, letter, number):
     else:
         datetime = wspr_extended['datetime']        
 
-    res['callsign']    = wspr_extended['callsign']
-    res['datetime']    = datetime
-    res['altitude']    = altitude[float(wspr_regular['pwr'])]
-    res['grid']        = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
-    res['voltage']     = voltage[wspr_extended['callsign'][1]]
-    res['temperature'] = temperature[wspr_extended['callsign'][5]]
-    res['satellites']  = satellites[float(wspr_extended['pwr'])]
+    res['callsign']           = wspr_regular['callsign']
+    res['telemetry_callsign'] = wspr_extended['callsign']
+    res['datetime']           = datetime
+    res['altitude']           = altitude[float(wspr_regular['pwr'])]
+    res['grid']               = wspr_extended['grid'] + wspr_extended['callsign'][3] + wspr_extended['callsign'][4]
+    res['voltage']            = voltage[wspr_extended['callsign'][1]]
+    res['temperature']        = temperature[wspr_extended['callsign'][5]]
+    res['satellites']         = satellites[float(wspr_extended['pwr'])]
 
     return res
