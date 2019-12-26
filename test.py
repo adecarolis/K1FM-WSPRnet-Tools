@@ -20,7 +20,7 @@ class Test_WSPRnet_to_APRS(unittest.TestCase):
     }
 
     def test_aprs_string(self):
-        self.assertEqual('N0CALL-11>WSPR,TCPIP:/230200z4033.71N/01520.51EOSolar:3.1V Temperature:5C Satellites:2 /A=001640',
+        self.assertEqual('N0CALL-11>WSPR,TCPIP:/230200z4033.71N/01520.51EOQB9MNJ Solar:3.1V Temperature:5C Satellites:2 /A=001640',
                          WSPRnet_to_APRS.generate_aprs_string(self.res))
     
 
