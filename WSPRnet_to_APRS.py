@@ -10,6 +10,7 @@ from datetime import datetime
 def aprs_password(callsign):
     ''' Takes a callsign and returns its APRS-IS password '''
 
+    # Credit: Peter Goodhall, https://github.com/magicbug/PHP-APRS-Passcode
     callsign = callsign.upper()
     hash = 0x73e2
     i = 0
