@@ -6,22 +6,8 @@ import gridsquare_functions
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-def get_wspr_data(callsign, timelimit = 3600 * 24, band = 14, count = 50):
-    ''' Returns a list of lists with WSPR entries for the provided callsign in the provided timeframe '''
-
-    WSPR_datapoint = [
-        'datetime',
-        'callsign',
-        'frequency',
-        'snr',
-        'drift',
-        'grid',
-        'pwr',
-        'reporter',
-        'rgrid',
-        'km',
-        'az'
-    ]
+def _wspr_request(callsign, timelimit = 3600 * 24, band = 14, count = 50):
+    ''' Returns a request object for the WSPRnet page relative to the provided callsign / timeframe '''
 
     url = 'http://wsprnet.org/drupal/wsprnet/spotquery'
 
@@ -52,7 +38,11 @@ def get_wspr_data(callsign, timelimit = 3600 * 24, band = 14, count = 50):
         'form_id'       : 'wsprnet_spotquery_form'
     }
 
-    response = requests.post(url, data=payload, headers=headers)
+    return requests.post(url, data=payload, headers=headers)
+
+def _parse_wspr_response(response):
+    ''' Gets the request object of a WSPRnet page and parses it '''
+
     #print(response)
     parsed_html = BeautifulSoup(response.content, features="html.parser")
     #print(parsed_html)
@@ -69,6 +59,20 @@ def get_wspr_data(callsign, timelimit = 3600 * 24, band = 14, count = 50):
         row = [i.text.replace("&nbsp;", "") for i in td]
         if len(row) > 0:
             rows.append(row)
+
+    WSPR_datapoint = [
+        'datetime',
+        'callsign',
+        'frequency',
+        'snr',
+        'drift',
+        'grid',
+        'pwr',
+        'reporter',
+        'rgrid',
+        'km',
+        'az'
+    ]
     
     for row in rows:
         res.append( dict( zip(WSPR_datapoint, [ x for x in map(str.strip, row)]) ) )
@@ -165,9 +169,9 @@ def get_telemetry(callsign, letter, number):
     }
     
     try:
-        wspr_regular = get_wspr_data(callsign = callsign, count = 1)[0]
+        wspr_regular = _parse_wspr_response(_wspr_request(callsign = callsign, count = 1))[0]
         search_callsign = '{}%{}*'.format(letter, number)
-        wspr_extended = get_wspr_data(callsign = search_callsign, count = 1)[0]
+        wspr_extended = _parse_wspr_response(_wspr_request(callsign = search_callsign, count = 1))[0]
     except IndexError:
         return None
 
