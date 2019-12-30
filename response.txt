@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+  "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" version="XHTML+RDFa 1.0" dir="ltr">
+
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={licenseKey:"NRJS-b57077ec1cd40272ac8",applicationID:"449073162"};window.NREUM||(NREUM={}),__nr_require=function(n,e,t){function r(t){if(!e[t]){var i=e[t]={exports:{}};n[t][0].call(i.exports,function(e){var i=n[t][1][e];return r(i||e)},i,i.exports)}return e[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var i=0;i<t.length;i++)r(t[i]);return r}({1:[function(n,e,t){function r(){}function i(n,e,t){return function(){return o(n,[u.now()].concat(f(arguments)),e?null:this,t),e?void 0:this}}var o=n("handle"),a=n(4),f=n(5),c=n("ee").get("tracer"),u=n("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],d="api-",l=d+"ixn-";a(p,function(n,e){s[e]=i(d+e,!0,"api")}),s.addPageAction=i(d+"addPageAction",!0),s.setCurrentRouteName=i(d+"routeName",!0),e.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(n,e){var t={},r=this,i="function"==typeof e;return o(l+"tracer",[u.now(),n,t],r),function(){if(c.emit((i?"":"no-")+"fn-start",[u.now(),r,i],t),i)try{return e.apply(this,arguments)}catch(n){throw c.emit("fn-err",[arguments,this,n],t),n}finally{c.emit("fn-end",[u.now()],t)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(n,e){m[e]=i(l+e)}),newrelic.noticeError=function(n,e){"string"==typeof n&&(n=new Error(n)),o("err",[n,u.now(),!1,e])}},{}],2:[function(n,e,t){function r(n,e){var t=n.getEntries();t.forEach(function(n){"first-paint"===n.name?a("timing",["fp",Math.floor(n.startTime)]):"first-contentful-paint"===n.name&&a("timing",["fcp",Math.floor(n.startTime)])})}function i(n){if(n instanceof c&&!s){var e,t=Math.round(n.timeStamp);e=t>1e12?Date.now()-t:f.now()-t,s=!0,a("timing",["fi",t,{type:n.type,fid:e}])}}if(!("init"in NREUM&&"page_view_timing"in NREUM.init&&"enabled"in NREUM.init.page_view_timing&&NREUM.init.page_view_timing.enabled===!1)){var o,a=n("handle"),f=n("loader"),c=NREUM.o.EV;if("PerformanceObserver"in window&&"function"==typeof window.PerformanceObserver){o=new PerformanceObserver(r);try{o.observe({entryTypes:["paint"]})}catch(u){}}if("addEventListener"in document){var s=!1,p=["click","keydown","mousedown","pointerdown","touchstart"];p.forEach(function(n){document.addEventListener(n,i,!1)})}}},{}],3:[function(n,e,t){function r(n,e){if(!i)return!1;if(n!==i)return!1;if(!e)return!0;if(!o)return!1;for(var t=o.split("."),r=e.split("."),a=0;a<r.length;a++)if(r[a]!==t[a])return!1;return!0}var i=null,o=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var f=navigator.userAgent,c=f.match(a);c&&f.indexOf("Chrome")===-1&&f.indexOf("Chromium")===-1&&(i="Safari",o=c[1])}e.exports={agent:i,version:o,match:r}},{}],4:[function(n,e,t){function r(n,e){var t=[],r="",o=0;for(r in n)i.call(n,r)&&(t[o]=e(r,n[r]),o+=1);return t}var i=Object.prototype.hasOwnProperty;e.exports=r},{}],5:[function(n,e,t){function r(n,e,t){e||(e=0),"undefined"==typeof t&&(t=n?n.length:0);for(var r=-1,i=t-e||0,o=Array(i<0?0:i);++r<i;)o[r]=n[e+r];return o}e.exports=r},{}],6:[function(n,e,t){e.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(n,e,t){function r(){}function i(n){function e(n){return n&&n instanceof r?n:n?c(n,f,o):o()}function t(t,r,i,o){if(!d.aborted||o){n&&n(t,r,i);for(var a=e(i),f=v(t),c=f.length,u=0;u<c;u++)f[u].apply(a,r);var p=s[y[t]];return p&&p.push([b,t,r,a]),a}}function l(n,e){h[n]=v(n).concat(e)}function m(n,e){var t=h[n];if(t)for(var r=0;r<t.length;r++)t[r]===e&&t.splice(r,1)}function v(n){return h[n]||[]}function g(n){return p[n]=p[n]||i(t)}function w(n,e){u(n,function(n,t){e=e||"feature",y[t]=e,e in s||(s[e]=[])})}var h={},y={},b={on:l,addEventListener:l,removeEventListener:m,emit:t,get:g,listeners:v,context:e,buffer:w,abort:a,aborted:!1};return b}function o(){return new r}function a(){(s.api||s.feature)&&(d.aborted=!0,s=d.backlog={})}var f="nr@context",c=n("gos"),u=n(4),s={},p={},d=e.exports=i();d.backlog=s},{}],gos:[function(n,e,t){function r(n,e,t){if(i.call(n,e))return n[e];var r=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(n,e,{value:r,writable:!0,enumerable:!1}),r}catch(o){}return n[e]=r,r}var i=Object.prototype.hasOwnProperty;e.exports=r},{}],handle:[function(n,e,t){function r(n,e,t,r){i.buffer([n],r),i.emit(n,e,t)}var i=n("ee").get("handle");e.exports=r,r.ee=i},{}],id:[function(n,e,t){function r(n){var e=typeof n;return!n||"object"!==e&&"function"!==e?-1:n===window?0:a(n,o,function(){return i++})}var i=1,o="nr@id",a=n("gos");e.exports=r},{}],loader:[function(n,e,t){function r(){if(!x++){var n=E.info=NREUM.info,e=l.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(n&&n.licenseKey&&n.applicationID&&e))return s.abort();u(y,function(e,t){n[e]||(n[e]=t)}),c("mark",["onload",a()+E.offset],null,"api");var t=l.createElement("script");t.src="https://"+n.agent,e.parentNode.insertBefore(t,e)}}function i(){"complete"===l.readyState&&o()}function o(){c("mark",["domContent",a()+E.offset],null,"api")}function a(){return O.exists&&performance.now?Math.round(performance.now()):(f=Math.max((new Date).getTime(),f))-E.offset}var f=(new Date).getTime(),c=n("handle"),u=n(4),s=n("ee"),p=n(3),d=window,l=d.document,m="addEventListener",v="attachEvent",g=d.XMLHttpRequest,w=g&&g.prototype;NREUM.o={ST:setTimeout,SI:d.setImmediate,CT:clearTimeout,XHR:g,REQ:d.Request,EV:d.Event,PR:d.Promise,MO:d.MutationObserver};var h=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1158.min.js"},b=g&&w&&w[m]&&!/CriOS/.test(navigator.userAgent),E=e.exports={offset:f,now:a,origin:h,features:{},xhrWrappable:b,userAgent:p};n(1),n(2),l[m]?(l[m]("DOMContentLoaded",o,!1),d[m]("load",r,!1)):(l[v]("onreadystatechange",i),d[v]("onload",r)),c("mark",["firstbyte",f],null,"api");var x=0,O=n(6)},{}],"wrap-function":[function(n,e,t){function r(n){return!(n&&n instanceof Function&&n.apply&&!n[a])}var i=n("ee"),o=n(5),a="nr@original",f=Object.prototype.hasOwnProperty,c=!1;e.exports=function(n,e){function t(n,e,t,i){function nrWrapper(){var r,a,f,c;try{a=this,r=o(arguments),f="function"==typeof t?t(r,a):t||{}}catch(u){d([u,"",[r,a,i],f])}s(e+"start",[r,a,i],f);try{return c=n.apply(a,r)}catch(p){throw s(e+"err",[r,a,p],f),p}finally{s(e+"end",[r,a,c],f)}}return r(n)?n:(e||(e=""),nrWrapper[a]=n,p(n,nrWrapper),nrWrapper)}function u(n,e,i,o){i||(i="");var a,f,c,u="-"===i.charAt(0);for(c=0;c<e.length;c++)f=e[c],a=n[f],r(a)||(n[f]=t(a,u?f+i:i,o,f))}function s(t,r,i){if(!c||e){var o=c;c=!0;try{n.emit(t,r,i,e)}catch(a){d([a,t,r,i])}c=o}}function p(n,e){if(Object.defineProperty&&Object.keys)try{var t=Object.keys(n);return t.forEach(function(t){Object.defineProperty(e,t,{get:function(){return n[t]},set:function(e){return n[t]=e,e}})}),e}catch(r){d([r])}for(var i in n)f.call(n,i)&&(e[i]=n[i]);return e}function d(e){try{n.emit("internal-error",e)}catch(t){}}return n||(n=i),t.inPlace=u,t.flag=a,t}},{}]},{},["loader"]);</script>
+<meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+<meta http-equiv="refresh" content="300" />
+<link rel="shortcut icon" href="http://wsprnet.org/drupal/sites/wsprnet.org/files/favicon.png" type="image/png" />
+  <title>Spot Database | WSPRnet</title>
+  <link type="text/css" rel="stylesheet" href="http://wsprnet.org/drupal/sites/wsprnet.org/files/css/css_dRT-6rU1dRftKRQwz-1EJWE6PP3Qm_cmfDslBM1Fs78.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://wsprnet.org/drupal/sites/wsprnet.org/files/css/css_pIuJfEyn0ZF4gpwpFGeZt0xKRlQvHYLbXYW0olAdO18.css" media="all" />
+<link type="text/css" rel="stylesheet" href="http://wsprnet.org/drupal/sites/wsprnet.org/files/css/css_Cp7PtrGACndArI8RduJHUHJmjlhjcapBlZJZcTIVeNk.css" media="all" />
+<style type="text/css" media="all">
+<!--/*--><![CDATA[/*><!--*/
+#page { width: 1; }
+body.sidebar-first #main, body.two-sidebars #main { margin-left: -210px !important; margin-right: 0px;}
+body.sidebar-first #squeeze, body.two-sidebars #squeeze { margin-left: 210px !important; margin-right: 0px; }
+#sidebar-left { width: 210px; }
+body.sidebar-second #main, body.two-sidebars #main { margin-right: -210px !important; margin-left: 0px;}
+body.sidebar-second #squeeze, body.two-sidebars #squeeze { margin-right: 210px !important; margin-left: 0px; }
+#sidebar-right { width: 210px; }
+body { font-family: Arial, Verdana, sans-serif; }
+#suckerfishmenu div .contextual-links-wrapper { display: none; }
+/*]]>*/-->
+</style>
+<link type="text/css" rel="stylesheet" href="http://wsprnet.org/drupal/sites/wsprnet.org/files/css/css_flYwABIkevZ1hiPKRqqntwu3Qjirk9DRDyZAX63RBzM.css" media="print" />
+
+<!--[if IE]>
+<link type="text/css" rel="stylesheet" href="http://wsprnet.org/drupal/sites/all/themes/newsflash/css/ie.css?q1604x" media="all" />
+<![endif]-->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="http://wsprnet.org/drupal/misc/jquery-extend-3.4.0.js?v=99.9"></script>
+<script type="text/javascript" src="http://wsprnet.org/drupal/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="http://wsprnet.org/drupal/misc/drupal.js?q1604x"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/drupal\/","pathPrefix":"","ajaxPageState":{"theme":"newsflash","theme_token":"ORYSilnROB3wfw2hpFhlwxGayN0wNiuEoxDSLob5UF8","js":{"http:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1\/jquery.min.js":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"modules\/comment\/comment.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"modules\/poll\/poll.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"modules\/forum\/forum.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/themes\/newsflash\/style.css":1,"sites\/all\/themes\/newsflash\/css\/blue.css":1,"sites\/all\/themes\/newsflash\/css\/suckerfish_blue.css":1,"0":1,"sites\/all\/themes\/newsflash\/print.css":1,"sites\/all\/themes\/newsflash\/css\/ie.css":1}},"urlIsAjaxTrusted":{"\/drupal\/wsprnet\/spots?destination=wsprnet\/spots":true}});
+//--><!]]>
+</script>
+<!--[if lte IE 6]>
+        <script type="text/javascript" src="sites/all/themes/newsflash/js/suckerfish.js"></script>
+      <![endif]--></head>
+<body class="html not-front not-logged-in one-sidebar sidebar-first page-wsprnet page-wsprnet-spots" >
+  <div id="skip-link">
+    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+  </div>
+    <!-- page -->
+<div id="page">
+  <!-- header -->
+  <div id="header" class="clearfix">
+            <div id="logo-title">
+      <!-- logo -->
+        <a href="/drupal/" title="Home"> <img src="http://wsprnet.org/drupal/sites/wsprnet.org/files/WSPRnet_0.png" alt="Home" id="logo" /> </a>
+      <!-- /logo -->
+      </div>
+            <div id="name-and-slogan"><!-- name and sloagan -->
+                <!-- site-name -->
+          <h1 class='site-name'> <a href="/drupal/" title="Home"> WSPRnet </a> </h1>
+        <!-- /site-name -->
+                          <!-- slogan -->
+          <div class='site-slogan'>
+          Welcome to the Weak Signal Propagation Reporter Network          </div>
+          <!-- /slogan -->
+              <!-- /name and sloagan -->
+      </div>
+                          <!-- navigation main/secondary menu -->
+        <div id="primary-secondary-menu">
+                      <div id="primarymenu">
+            <!-- main menu -->
+                <ul class="links primary-links"><li class="menu-242 first"><a href="/drupal/wsprnet/activity" title="List of stations currently active by band">Activity</a></li>
+<li class="menu-204"><a href="/drupal/wsprnet/map" title="Map of recently heard WSPR spots">Map</a></li>
+<li class="menu-273"><a href="/drupal/wsprnet/spotquery" title="WSPR spot database">Database</a></li>
+<li class="menu-206"><a href="/drupal/forum" title="Form for discussion of WSPR activities">Forum</a></li>
+<li class="menu-208 last"><a href="/drupal/downloads" title="Information about downloads of WSPR software and data.">Downloads</a></li>
+</ul>            <!-- /main menu -->
+            </div>
+                            </div>
+        <!-- /navigation main/secondary menu -->
+              </div>
+  <!-- /header -->
+      <!-- middle-container -->
+  <div id="middlecontainer">
+        <!-- sidebar-left -->
+      <div id="sidebar-left">
+        <div class="region region-sidebar-first">
+    <div id="block-user-login" class="block block-user">
+
+    <h2 class="title">User login</h2>
+
+  <div class="content">
+    <form action="/drupal/wsprnet/spots?destination=wsprnet/spots" method="post" id="user-login-form" accept-charset="UTF-8"><div><div class="form-item form-type-textfield form-item-name">
+  <label for="edit-name">Username <span class="form-required" title="This field is required.">*</span></label>
+ <input type="text" id="edit-name" name="name" value="" size="15" maxlength="60" class="form-text required" />
+</div>
+<div class="form-item form-type-password form-item-pass">
+  <label for="edit-pass">Password <span class="form-required" title="This field is required.">*</span></label>
+ <input type="password" id="edit-pass" name="pass" size="15" maxlength="128" class="form-text required" />
+</div>
+<div class="item-list"><ul><li class="first"><a href="/drupal/user/register" title="Create a new user account.">Create new account</a></li>
+<li class="last"><a href="/drupal/user/password" title="Request new password via e-mail.">Request new password</a></li>
+</ul></div><input type="hidden" name="form_build_id" value="form-Q0kcjmrLIUQie3TniP8lE2ynM7LdFweb8VaNhlwMRVw" />
+<input type="hidden" name="form_id" value="user_login_block" />
+<div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Log in" class="form-submit" /></div></div></form>  </div>
+</div>
+<div id="block-block-2" class="block block-block">
+
+    <h2 class="title">Frequencies</h2>
+
+  <div class="content">
+    <p>USB dial (MHz): 0.136, 0.4742, 1.8366, 3.5686, 5.2872, 5364.7, 7.0386, 10.1387, 14.0956, 18.1046, 21.0946, 24.9246, 28.1246, 50.293, 70.091, 144.489, 432.300, 1296.500</p>
+  </div>
+</div>
+<div id="block-system-navigation" class="block block-system block-menu">
+
+    <h2 class="title">Navigation</h2>
+
+  <div class="content">
+    <ul class="menu"><li class="first last collapsed"><a href="/drupal/forum">Forums</a></li>
+</ul>  </div>
+</div>
+<div id="block-block-9" class="block block-block">
+
+    <h2 class="title">3rd Party Maps and Data</h2>
+
+  <div class="content">
+    <p><a href="http://wspr.aprsinfo.com/">M0XDK Map</a><br /><a href="http://mardie4.100webspace.net/index.html">KB9AMG Monthly Stats</a><br /><a href="http://www.wa2zkd.net:8088/">WA2ZKD Spot Analysis</a></p>
+  </div>
+</div>
+<div id="block-user-online" class="block block-user">
+
+    <h2 class="title">Who's online</h2>
+
+  <div class="content">
+    <p>There are currently 80 users online.</p><div class="item-list"><ul><li class="first"><span class="username">DJ2RD</span></li>
+<li><span class="username">G4PCI</span></li>
+<li><span class="username">2E0ILY</span></li>
+<li><span class="username">VK3XL</span></li>
+<li><span class="username">DK8FT</span></li>
+<li><span class="username">G3ZIL</span></li>
+<li><span class="username">HA3PG</span></li>
+<li><span class="username">k6pzb</span></li>
+<li><span class="username">g3jkf</span></li>
+<li><span class="username">G6NHU</span></li>
+<li><span class="username">2e0vov</span></li>
+<li><span class="username">DL2SBA</span></li>
+<li><span class="username">WW6D</span></li>
+<li><span class="username">DK2DB</span></li>
+<li><span class="username">OZ7IT</span></li>
+<li><span class="username">EA5KA</span></li>
+<li><span class="username">AC2ZF</span></li>
+<li><span class="username">LA3JJ</span></li>
+<li><span class="username">kd6adc</span></li>
+<li><span class="username">DM3FML</span></li>
+<li><span class="username">DL4MFC</span></li>
+<li><span class="username">TI4JWC</span></li>
+<li><span class="username">G4DJB</span></li>
+<li><span class="username">NV4X</span></li>
+<li><span class="username">AF7XZ</span></li>
+<li><span class="username">DL7NN</span></li>
+<li><span class="username">G7CHB</span></li>
+<li><span class="username">DB5BZ</span></li>
+<li><span class="username">AB4DF</span></li>
+<li><span class="username">GM4OOU</span></li>
+<li><span class="username">NL13926</span></li>
+<li><span class="username">KW4XK</span></li>
+<li><span class="username">pd0pha</span></li>
+<li><span class="username">JH1OFX</span></li>
+<li><span class="username">HS0ZKM</span></li>
+<li><span class="username">DM1RG</span></li>
+<li><span class="username">GM4SFW</span></li>
+<li><span class="username">vk2kcm</span></li>
+<li><span class="username">ja9mat</span></li>
+<li><span class="username">UA3DJR</span></li>
+<li><span class="username">G3THQ</span></li>
+<li><span class="username">on7kb</span></li>
+<li><span class="username">DF2JP</span></li>
+<li><span class="username">VK2EFM</span></li>
+<li><span class="username">9Z4FV</span></li>
+<li><span class="username">JI1BQW</span></li>
+<li><span class="username">OE9BKJ</span></li>
+<li><span class="username">G4ZFQ</span></li>
+<li><span class="username">WA2ZKD</span></li>
+<li><span class="username">VK2KRR</span></li>
+<li><span class="username">PH1UW</span></li>
+<li><span class="username">G0LUJ</span></li>
+<li><span class="username">PE3ES</span></li>
+<li><span class="username">WA4DT</span></li>
+<li><span class="username">G6MZK</span></li>
+<li><span class="username">DC6ZK</span></li>
+<li><span class="username">HB9SHD</span></li>
+<li><span class="username">N7DDK</span></li>
+<li><span class="username">g0wzm</span></li>
+<li><span class="username">K4WIN</span></li>
+<li><span class="username">AC9RZ</span></li>
+<li><span class="username">KC1DNY</span></li>
+<li><span class="username">k9an</span></li>
+<li><span class="username">OZ1AAB</span></li>
+<li><span class="username">G4MIB</span></li>
+<li><span class="username">G4BOO</span></li>
+<li><span class="username">g7mce</span></li>
+<li><span class="username">ZS6KN</span></li>
+<li><span class="username">PY1ZB</span></li>
+<li><span class="username">dk4rh</span></li>
+<li><span class="username">G7ONM</span></li>
+<li><span class="username">KN6EWX</span></li>
+<li><span class="username">kj6wsm</span></li>
+<li><span class="username">WM1N</span></li>
+<li><span class="username">KE0TSD</span></li>
+<li><span class="username">DF7XH</span></li>
+<li><span class="username">W5MWI</span></li>
+<li><span class="username">AA5CT</span></li>
+<li><span class="username">2E0FHE</span></li>
+<li class="last"><span class="username">VK3LDB</span></li>
+</ul></div>  </div>
+</div>
+  </div>
+      </div>
+    <!-- /sidebar-left -->
+        <!-- main -->
+    <div id="main">
+      <!-- sequeeze -->
+      <div id="squeeze">
+                        <!-- sequeeze-content -->
+        <div id="squeeze-content">
+          <!-- inner-content -->
+          <div id="inner-content">
+                                    <!-- messages -->
+                        <!-- /messages -->
+                        <!-- title -->
+              <div id="branding" class="clearfix">
+                                <h1  class="title">Spot Database</h1>
+                              </div>
+            <!-- /title -->
+                                    <!-- tabs -->
+              <div class="tabs">
+                              </div>
+            <!-- /tabs -->
+                                                <!-- content -->
+              <div class="region region-content">
+    <div id="block-system-main" class="block block-system">
+
+
+  <div class="content">
+    <p><a href="/drupal/wsprnet/spotquery">Specify query parameters</a></p>
+<p>1 spots:</p>
+<table><tr><th>Timestamp</th><th>Call</th><th>MHz</th><th>SNR</th><th>Drift</th><th>Grid</th><th>Pwr</th><th>Reporter</th><th>RGrid</th><th>km</th><th>az</th></tr>
+<tr><td align='right'>&nbsp;2019-12-30 09:30&nbsp;</td><td align='left'>&nbsp;SC1ALB&nbsp;</td><td align='right'>&nbsp;14.097141&nbsp;</td><td align='right'>&nbsp;-20&nbsp;</td><td align='right'>&nbsp;0&nbsp;</td><td align='left'>&nbsp;HL25&nbsp;</td><td align='right'>&nbsp;5&nbsp;</td><td align='left'>&nbsp;N0CAL&nbsp;</td><td align='left'>&nbsp;JO31mb&nbsp;</td><td align='right'>&nbsp;4564&nbsp;</td><td align='right'>&nbsp;40&nbsp;</td></tr>
+</table>
+<p><em>Query time: 0.012 sec</em></p>
+<br><a href="/olddb">Link to old database interface</a>  </div>
+</div>
+  </div>
+            <!-- /content -->
+                                  </div>
+          <!-- /inner-content -->
+        </div>
+        <!-- /squeeze-content -->
+      </div>
+      <!-- /squeeze -->
+    </div>
+    <!-- /main -->
+      </div>
+  <!-- /middle-container -->
+  <div style="clear:both"></div>
+          <div id="footer">
+              <div id="footer-region">
+            <div class="region region-footer">
+    <div id="block-block-7" class="block block-block">
+
+
+  <div class="content">
+    For issues with this site, email the <a href="mailto:wsprnet@wsprnet.org">WSPRNET Admin Team</a> or post to the site forum. Downloads and more information about WSPR program and the MEPT_JT mode, as well as other modes by Joe Taylor (K1JT), can be found at the <a href='http://physics.princeton.edu/pulsar/K1JT/'>WSJT Home Page</a>.  </div>
+</div>
+  </div>
+        </div><!-- /footer -->
+                          <div class="rooplelogo">
+                      <a href="http://www.roopletheme.com" title="RoopleTheme!" target="_blank"><img src="/drupal/sites/all/themes/newsflash/RoopleThemeLogo.png" alt="RoopleTheme!"/></a>
+                  </div><!-- /rooplelogo -->
+          </div>
+  </div>
+<!-- /page NF VER 2.5-->
+  <script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"NRJS-b57077ec1cd40272ac8","applicationID":"449073162","transactionName":"YF0GYRdVWUpYAENdWlkXJVYRXVhXFhREREdZXRBqFkRYTUo=","queueTime":0,"applicationTime":30,"atts":"TBoFF19PSkQ=","errorBeacon":"bam.nr-data.net","agent":""}</script></body>
+</html>

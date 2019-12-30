@@ -1,10 +1,12 @@
 import requests
 import logging
 import json
+import pickle
 import unicodedata
 import gridsquare_functions
 from datetime import datetime
 from bs4 import BeautifulSoup
+
 
 def _wspr_request(callsign, timelimit = 3600 * 24, band = 14, count = 50):
     ''' Returns a request object for the WSPRnet page relative to the provided callsign / timeframe '''
@@ -38,16 +40,15 @@ def _wspr_request(callsign, timelimit = 3600 * 24, band = 14, count = 50):
         'form_id'       : 'wsprnet_spotquery_form'
     }
 
-    return requests.post(url, data=payload, headers=headers)
+    res = requests.post(url, data=payload, headers=headers)
+    return res.content
 
-def _parse_wspr_response(response):
+
+def _parse_wspr_response(response_content):
     ''' Gets the request object of a WSPRnet page and parses it '''
 
-    #print(response)
-    parsed_html = BeautifulSoup(response.content, features="html.parser")
-    #print(parsed_html)
+    parsed_html = BeautifulSoup(response_content, features="html.parser")
     main_content = parsed_html.body.find('div', attrs={'class':'region region-content'})
-    #print(main_content)
     table = main_content.find('table')
     table_rows = table.findAll('tr')
 
