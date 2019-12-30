@@ -1,7 +1,7 @@
 import csv
 import time
 import simplekml
-import gridsquare_functions
+from K1FM_WSPRnet_Tools import gridsquare_functions
 
 
 if __name__ == '__main__':

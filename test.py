@@ -1,7 +1,7 @@
 import pprint
 import aprslib
-import WSPRnet_to_APRS
-import WSPRnet_fetch
+from K1FM_WSPRnet_Tools import WSPRnet_fetch
+from K1FM_WSPRnet_Tools import WSPRnet_to_APRS
 import unittest
 import mock
 import requests
@@ -41,7 +41,7 @@ class Test_WSPRnet_fetch(unittest.TestCase):
                 'voltage': 3.3,
                 'temperature': -32,
                 'satellites': '?'}
-            response = open('response.txt', 'r')
+            response = open('K1FM_WSPRnet_Tools/test/response.txt', 'r')
             # Need to figure how to set different responses for different data params
             m.post('http://wsprnet.org/drupal/wsprnet/spotquery', text=response.read())
             response.close()
@@ -68,7 +68,7 @@ class Test_WSPRnet_to_APRS(unittest.TestCase):
     
 
     def test_check_data_age(self):
-        with mock.patch('WSPRnet_to_APRS._get_utc_now', return_value=datetime(2019, 12, 23, 2, 3, 2)):
+        with mock.patch('K1FM_WSPRnet_Tools.WSPRnet_to_APRS._get_utc_now', return_value=datetime(2019, 12, 23, 2, 3, 2)):
             self.assertEqual(70, WSPRnet_to_APRS.check_data_age(self.res))
     
     def test_aprs_password(self):

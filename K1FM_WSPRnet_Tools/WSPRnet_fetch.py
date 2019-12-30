@@ -3,7 +3,7 @@ import logging
 import json
 import pickle
 import unicodedata
-import gridsquare_functions
+from K1FM_WSPRnet_Tools import gridsquare_functions
 from datetime import datetime
 from bs4 import BeautifulSoup
 
