@@ -169,18 +169,14 @@ def save_kml_file(data, filename):
     style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png'
 
     coords = []
-    ls = kml.newlinestring(name='A LineString')
+    ls = kml.newlinestring(name=filename)
 
     for locator in data:
         coords.append( (data[locator][2], data[locator][1], data[locator][3]) )
-        pnt = kml.newpoint(name=locator, coords=[(data[locator][2],
-                                                  data[locator][1],
-                                                  data[locator][3])])
-        pnt.description = "{} - {} meters".format(data[locator][0], data[locator][3])
-        pnt.camera.latitude = data[locator][2]
-        pnt.camera.longitude = data[locator][1]
-        pnt.camera.altitude = data[locator][3]
-        pnt.camera.altitudemode = simplekml.AltitudeMode.relativetoground
+        pnt = kml.newpoint( coords=[(data[locator][2],
+                                     data[locator][1],
+                                     data[locator][3])])
+        pnt.description = "{}<br/>{}<br/>{} meters".format(locator.upper(), data[locator][0], data[locator][3])
         pnt.style = style
 
     ls.coords = coords
