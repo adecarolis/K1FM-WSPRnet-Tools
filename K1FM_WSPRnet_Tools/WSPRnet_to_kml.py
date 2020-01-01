@@ -164,17 +164,26 @@ def save_kml_file(data, filename):
     ''' Saves a dictionary of locator positions to a KML formatted file '''
 
     kml = simplekml.Kml()
-    #style = simplekml.Style()
+    style = simplekml.Style()
+    style.labelstyle.color = simplekml.Color.red
+    style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png'
 
+    coords = []
+    ls = kml.newlinestring(name='A LineString')
 
     for locator in data:
-        kml.newpoint(name=data[locator][0] + ' - ' + locator, coords=[(data[locator][2],
-                                                                       data[locator][1],
-                                                                       data[locator][3])])
-        # pnt.camera.latitude = data[locator][2]
-        # pnt.camera.longitude = data[locator][1]
-        # pnt.camera.altitude = data[locator][3]
-        # pnt.camera.altitudemode = simplekml.AltitudeMode.relativetoground
-        # pnt.style = style
+        coords.append( (data[locator][2], data[locator][1], data[locator][3]) )
+        pnt = kml.newpoint(name=locator, coords=[(data[locator][2],
+                                                  data[locator][1],
+                                                  data[locator][3])])
+        pnt.description = "{} - {} meters".format(data[locator][0], data[locator][3])
+        pnt.camera.latitude = data[locator][2]
+        pnt.camera.longitude = data[locator][1]
+        pnt.camera.altitude = data[locator][3]
+        pnt.camera.altitudemode = simplekml.AltitudeMode.relativetoground
+        pnt.style = style
+
+    ls.coords = coords
+    ls.altitudemode = simplekml.AltitudeMode.relativetoground
 
     kml.save(filename + '.kml')
