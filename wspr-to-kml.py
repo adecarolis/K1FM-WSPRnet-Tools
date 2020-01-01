@@ -37,9 +37,6 @@ if __name__ == '__main__':
     else:
         args.end_month = datetime.now()
 
-    if debug:
-        print('Command line arguments:')
-        print(args)
     
     # get the list of the necessary files
     months = WSPRnet_to_kml.get_months_list(args.start_month, args.end_month)

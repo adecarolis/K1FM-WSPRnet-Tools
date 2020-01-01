@@ -20,10 +20,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     debug = args.debug
 
-    if debug:
-        print('Command line arguments:')
-        print(args)
-
     callsign = args.callsign
 
     pp = pprint.PrettyPrinter(indent=4)
