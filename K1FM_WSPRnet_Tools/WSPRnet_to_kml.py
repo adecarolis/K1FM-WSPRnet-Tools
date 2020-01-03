@@ -166,8 +166,8 @@ def generate_kml_data(wspr_data):
         
     return res
 
-def _print_time(datetime):
-    return time.strftime('%H:%M', datetime)
+def _print_time(datetime, str_pattern):
+    return time.strftime(str_pattern, datetime)
 
 def save_kml_file(data, filename):
     ''' Saves a list of locator positions as a KML formatted file '''
@@ -193,13 +193,17 @@ def save_kml_file(data, filename):
         fol = kml.newfolder(name=day_str)
         for k in sorted(tmp[day_str], key=lambda x: x[1]):
             coords.append( (k[3], k[2], k[4]) )
-            pnt = fol.newpoint( name=_print_time(k[1]) + ' - ' + k[0],
+            pnt = fol.newpoint( name='{} {} {}m'.format(_print_time(k[1], '%H:%M'),
+                                                                    k[0],
+                                                                    k[4]),
                                 coords=[(k[3],
                                          k[2],
                                          k[4])] )
             pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/paddle/wht-blank.png'
             pnt.altitudemode = 'absolute'
-
+            pnt.description = 'Date/Time:{}<br/>Locator: {}<br/>Altitude: {}m<br/>'.format(_print_time(k[1], '%B %d %Y %H:%M:%s'),
+                                                                                                       k[0],
+                                                                                                       k[4])
     ls.coords = coords
     ls.altitudemode = simplekml.AltitudeMode.relativetoground
 
