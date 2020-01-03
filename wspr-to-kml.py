@@ -79,8 +79,7 @@ if __name__ == '__main__':
         wspr_data.extend(res)
 
 
-    kml_data = {}
-    res = WSPRnet_to_kml.generate_kml_data(wspr_data, kml_data)
+    res = WSPRnet_to_kml.generate_kml_data(wspr_data)
     filename = args.callsign + '_' + '_'.join([ m.strftime("%Y-%m") for m in months ])
     if debug:
         print('Writing KML file: {}.kml'.format(filename))

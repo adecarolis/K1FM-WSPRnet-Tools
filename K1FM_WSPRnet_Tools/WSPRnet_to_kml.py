@@ -109,15 +109,12 @@ def get_files_list(months):
     return files
 
 
-def generate_kml_data(wspr_data, output):
+def generate_kml_data(wspr_data):
     ''' 
-        Given a list of WSPR datapoints, generates a dictionary of locator positions
+        Given a list of WSPR datapoints, generates a list
         to be used to generate a KML file:
         Eg.:
-        {
-            'FN30AS': (datetime, lat, lng)
-        }
-        FN30AS:
+        [['FN30AS', datetime, lat, lng], ['FN30AT', datetime, lat, lng]]
     '''
     
     altitude_dict = {
@@ -142,6 +139,7 @@ def generate_kml_data(wspr_data, output):
         '60': 18000
     }
 
+    locators_data = {}
     altitude = 0
     for row in wspr_data:
         callsign = row[6]
@@ -154,30 +152,53 @@ def generate_kml_data(wspr_data, output):
             altitude = altitude_dict[row[8]]
             continue
 
-        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch)))
+        datetime = time.localtime(int(epoch))
+        #datetime_str = time.strftime('%Y-%m-%d %H:%M:%S', datetime)
         lat, lng = gridsquare_functions.to_latlng(locator)
-        output[locator] = (datetime, lat, lng, altitude)
+        # Save one datapoint per locator only
+        locators_data[locator] = (datetime, lat, lng, altitude)
     
-    return output
+    res = []
+    for key in locators_data.keys():
+        tmp = []
+        tmp.append(key)
+        tmp.extend(locators_data[key])
+        res.append(tmp)
+        
+    return res
+
+def _print_date(datetime):
+    return time.strftime('%Y-%m-%d %H:%M:%S', datetime)
 
 def save_kml_file(data, filename):
-    ''' Saves a dictionary of locator positions to a KML formatted file '''
+    ''' Saves a list of locator positions as a KML formatted file '''
 
     kml = simplekml.Kml()
-    style = simplekml.Style()
-    style.labelstyle.color = simplekml.Color.red
-    style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png'
-
     coords = []
     ls = kml.newlinestring(name=filename)
+    tmp = {}
 
-    for locator in data:
-        coords.append( (data[locator][2], data[locator][1], data[locator][3]) )
-        pnt = kml.newpoint( coords=[(data[locator][2],
-                                     data[locator][1],
-                                     data[locator][3])])
-        pnt.description = "{}<br/>{}<br/>{} meters".format(locator.upper(), data[locator][0], data[locator][3])
-        pnt.style = style
+    # Group data by day, so that KML elements can be organized
+    # in folders
+    for x in sorted(data, key=lambda x: x[1]):
+        h_date = time.strftime('%B %d', x[1])
+        if h_date in tmp:
+            tmp[ h_date ].append(x)
+        else:
+            tmp[ h_date ] = [x]
+
+    # Create a KML folder for each day. Points within folders are
+    # ordered by datetime
+    for day_str in sorted(tmp.keys(), key=lambda  x: x[1]):
+
+        fol = kml.newfolder(name=day_str)
+        for k in sorted(tmp[day_str], key=lambda x: x[1]):
+            coords.append( (k[3], k[2], k[4]) )
+            pnt = fol.newpoint( name=_print_date(k[1]) + ' - ' + k[0],
+                                coords=[(k[3],
+                                         k[2],
+                                         k[4])] )
+            pnt.style.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/paddle/wht-blank.png'
 
     ls.coords = coords
     ls.altitudemode = simplekml.AltitudeMode.relativetoground
