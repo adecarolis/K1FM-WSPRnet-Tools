@@ -1,23 +1,28 @@
 #!/usr/bin/python
 import string
 
+
 def _lng_to_gridsquare(lng):
     """ Takes in a WGS-84 compatible longitude value and converts it into
-    a tuple in the form of (field, square, subsquare). """ 
+    a tuple in the form of (field, square, subsquare). """
     lng = lng + 180
     field, lng = divmod(lng, 20)
     square, lng = divmod(lng, 2)
     subsq = (lng * 12)
-    return (string.ascii_uppercase[int(field)], int(square), string.ascii_lowercase[int(subsq)])
+    return (string.ascii_uppercase[int(field)], int(
+        square), string.ascii_lowercase[int(subsq)])
+
 
 def _lat_to_gridsquare(lat):
     """ Takes in a WGS-84 compatible latitude value and converts it into
-    a tuple in the form of (field, square, subsquare). """ 
+    a tuple in the form of (field, square, subsquare). """
     lat = lat + 90
     field, lat = divmod(lat, 10)
     square, lat = divmod(lat, 1)
     subsq = lat * 24
-    return (string.ascii_uppercase[int(field)], int(square), string.ascii_lowercase[int(subsq)])
+    return (string.ascii_uppercase[int(field)], int(
+        square), string.ascii_lowercase[int(subsq)])
+
 
 def _to_lat(field, square, subsq=None):
     """ Converts the specified field, square, and (optional) sub-square into a
@@ -26,10 +31,11 @@ def _to_lat(field, square, subsq=None):
     lat += square
     if subsq is not None:
         lat += (string.ascii_lowercase.index(subsq) / 24.0)
-        lat += 1.25 / 60.0 
+        lat += 1.25 / 60.0
     else:
         lat += 0.5
     return lat
+
 
 def _to_lng(field, square, subsq=None):
     """ Converts the specified field, square, and (optional) sub-square into a
@@ -43,17 +49,19 @@ def _to_lng(field, square, subsq=None):
         lng += 1.0
     return lng
 
+
 def to_gridsquare(latitude, longitude):
     """ Takes in a WGS-84 compatible combination of latitude and longitude
     values, and creates the string representation of the Maidenhead location,
-    also known as a "gridsquare". """ 
+    also known as a "gridsquare". """
     if not (-180 <= latitude <= 180):
         raise ValueError("Invalid latitude specified.")
     if not (-180 <= longitude <= 180):
         raise ValueError("Invalid longitude specified.")
     lat = _lat_to_gridsquare(latitude)
     lng = _lng_to_gridsquare(longitude)
-    return "".join([str(x) + str(y) for x, y in zip(lng,lat)])
+    return "".join([str(x) + str(y) for x, y in zip(lng, lat)])
+
 
 def to_latlng(gs):
     """ Takes in a Maidenhead locator string (gridsquare) and converts it into
