@@ -1,7 +1,6 @@
 import requests
 import logging
 import json
-import pickle
 import unicodedata
 from K1FM_WSPRnet_Tools import gridsquare_functions
 from datetime import datetime
