@@ -60,14 +60,22 @@ if __name__ == '__main__':
     debug = args.debug
 
     if not args.start_month:
-        args.start_month = datetime.now()
+        args.start_month = datetime.now().replace(day=1,
+                                                  hour=0,
+                                                  minute=0,
+                                                  second=0,
+                                                  microsecond=0)
 
     if args.end_month:
         if args.end_month < args.start_month:
             print('Error: end_month must be greater or equal to start_month')
             exit(1)
     else:
-        args.end_month = datetime.now()
+        args.end_month = datetime.now().replace(day=1,
+                                                hour=0,
+                                                minute=0,
+                                                second=0,
+                                                microsecond=0)
 
     # get the list of the necessary files
     months = WSPRnet_to_kml.get_months_list(args.start_month, args.end_month)
