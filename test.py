@@ -26,7 +26,7 @@ class Test_WSPRnet_fetch(unittest.TestCase):
              'km': '1578',
              'az': '5'}
         ]
-        pickle_off = open("N0CALL", "rb")
+        pickle_off = open("K1FM_WSPRnet_Tools/test/N0CALL", "rb")
         response_content = pickle.load(pickle_off)
         pickle_off.close()
         self.assertEqual(
