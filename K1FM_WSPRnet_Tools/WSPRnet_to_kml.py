@@ -8,6 +8,7 @@ import simplekml
 import pycurl
 from dateutil.relativedelta import relativedelta
 from K1FM_WSPRnet_Tools import gridsquare_functions
+from K1FM_WSPRnet_Tools import values
 
 
 def gunzip_shutil(source_filepath, dest_filepath, block_size=65536):
@@ -124,28 +125,6 @@ def generate_kml_data(wspr_data):
         [['FN30AS', datetime, lat, lng], ['FN30AT', datetime, lat, lng]]
     '''
 
-    altitude_dict = {
-        '0': 500,
-        '3': 1000,
-        '7': 2000,
-        '10': 3000,
-        '13': 4000,
-        '17': 5000,
-        '20': 6000,
-        '23': 7000,
-        '27': 8000,
-        '30': 9000,
-        '33': 10000,
-        '37': 11000,
-        '40': 12000,
-        '43': 13000,
-        '47': 14000,
-        '50': 15000,
-        '53': 16000,
-        '57': 17000,
-        '60': 18000
-    }
-
     locators_data = {}
     altitude = 0
     for row in wspr_data:
@@ -156,7 +135,7 @@ def generate_kml_data(wspr_data):
 
         # From regular WSPR frames we just use the Altitude
         if row[6][0] != 'Q' and row[6][0] != '0':
-            altitude = altitude_dict[row[8]]
+            altitude = values.altitude_dbm[row[8]]
             continue
 
         datetime = time.localtime(int(epoch))
