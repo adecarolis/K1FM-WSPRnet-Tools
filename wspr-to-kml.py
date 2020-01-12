@@ -17,7 +17,8 @@ def year_month_type(arg_value):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
-        description='This utility takes data from WSPR archives and generates KML files for K1FM Picoballoon flights.')
+        description='This utility takes data from WSPR archives ' +
+                    'and generates KML files for K1FM Picoballoon flights.')
     parser.add_argument(
         'callsign',
         metavar='callsign',
@@ -43,12 +44,14 @@ if __name__ == '__main__':
         '--start-month',
         type=year_month_type,
         dest='start_month',
-        help='year-month when the flight begun (eg. 2019-09). Defaults to current month')
+        help='year-month when the flight begun (eg. 2019-09). ' +
+             'Defaults to current month')
     parser.add_argument(
         '--end-month',
         type=year_month_type,
         dest='end_month',
-        help='year-month when the flight ended (eg. 2019-11). Defaults to current month')
+        help='year-month when the flight ended (eg. 2019-11). ' +
+             'Defaults to current month')
     parser.add_argument(
         '--skip-downloads',
         dest='skip_downloads',
